@@ -20,7 +20,7 @@ export default function Home() {
     return (
         <div className="min-h-screen h-full w-full flex items-center justify-center">
             <button
-                className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
+                className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-neutral-100 text-neutral-950 gap-2 hover:brightness-90 text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
                 onClick={sendNotification}
             >
                 send notification
