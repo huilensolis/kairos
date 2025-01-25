@@ -1,30 +1,20 @@
 'use client'
 
-import { WebPushNotification } from "@/pwa/models/web-push-notifications";
-
 export default function Home() {
-    async function sendNotification() {
-
-        const permissions = WebPushNotification.getPermissionStatus()
-
-        if (permissions !== 'granted') {
-            const { success } = await WebPushNotification.askForPermission()
-
-            if (!success) return
-        }
-
-        WebPushNotification.sendNotification(
-            { title: "Kairos", options: { body: "test notification", icon: '/favicon_io/android-chrome-512x512.png' } })
-    }
-
     return (
-        <div className="min-h-screen h-full w-full flex items-center justify-center">
-            <button
-                className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-neutral-100 text-neutral-950 gap-2 hover:brightness-90 text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-                onClick={sendNotification}
-            >
-                send notification
-            </button>
+        <div className="w-full h-full grid grid-cols-4">
+            <aside className="col-span-1"> time blocks templates</aside>
+            <main className="col-span-2 border-x border-ext_light_foreground flex justify-center">
+                <ul className="flex flex-col gap-2 w-full px-2 py-2 max-w-2xl">
+                    <li className="bg-ext_yellow rounded-sm h-24 w-full"></li>
+                    <li className="bg-ext_indigo rounded-sm h-24 w-full"></li>
+                    <li className="bg-ext_green rounded-sm h-24 w-full"></li>
+                    <li className="bg-ext_red rounded-sm h-24 w-full border-2 border-ext_light_foreground"></li>
+                    <li className="bg-ext_orange rounded-sm h-24 w-full border-2 border-ext_light_foreground"></li>
+                    <li className="bg-ext_blue rounded-sm h-24 w-full border-2 border-ext_light_foreground"></li>
+                </ul>
+            </main>
+            <aside className="col-span-1"> music info</aside>
         </div>
     );
 }
