@@ -1,7 +1,7 @@
 type TData = string | object | number
 type TItemChanges = Pick<StorageEvent, 'key' | 'oldValue' | 'newValue' | 'url'>
 
-export class Storage {
+export class StorageModel {
     constructor() {
         //
     }
@@ -46,6 +46,14 @@ export class Storage {
     static saveItem({ key, data }: { key: string, data: TData }): {
         error: null | string
     } {
+
+        if (typeof key !== 'string' && typeof key !== 'number') return { error: 'key must be string or number' }
+
+        if (typeof key === 'number' && isNaN(key)) return { error: 'key can not be NaN' }
+        if (typeof key === 'string' && key.length === 0) return { error: 'key can not be an empty string' }
+
+        if (typeof data !== 'string') return { error: 'data only can be of type string' }
+        if (typeof data === 'string' && data.length === 0) return { error: 'data lenght can not be zero' }
 
         const { data: stringifiedData } = this.stringify(data)
 
