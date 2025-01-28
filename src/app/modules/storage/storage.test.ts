@@ -8,6 +8,33 @@ beforeEach(() => {
 
 describe("Storage", () => {
 
+    describe('clear method', () => {
+        const items = [
+
+            { key: '1', data: 'some data' }
+            , { key: '2', data: 'some data' }
+            , { key: '3', data: 'some data' }
+            , { key: '4', data: 'some data' }
+        ]
+
+        test('clear method clears stored data', () => {
+
+            for (const item of items) {
+                StorageModel.saveItem(item)
+            }
+
+            StorageModel.clear()
+
+            for (const item of items) {
+                const { error, item: itemReturn } = StorageModel.getItem(item)
+                expect(error).toBeTruthy()
+                expect(itemReturn).toBeNull()
+            }
+
+
+        })
+    })
+
     describe('saveItem method', () => {
 
         const invalidKeyTypes = [
