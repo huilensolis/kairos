@@ -1,4 +1,4 @@
-type TData = string | object | number
+type TData = string | object | number | [unknown] | boolean
 type TItemChanges = Pick<StorageEvent, 'key' | 'oldValue' | 'newValue' | 'url'>
 
 export class StorageModel {
@@ -8,11 +8,13 @@ export class StorageModel {
 
     private static stringify(data: TData): { data: string } {
 
-        if (typeof data === 'object') {
+        if (typeof data === 'object' || typeof data === 'boolean') {
             const stringifiedData = JSON.stringify(data)
 
             return { data: stringifiedData }
-        } else if (typeof data === 'number') {
+        }
+
+        if (typeof data === 'number') {
             return { data: data.toString() }
         }
 
@@ -52,8 +54,11 @@ export class StorageModel {
         if (typeof key === 'number' && isNaN(key)) return { error: 'key can not be NaN' }
         if (typeof key === 'string' && key.length === 0) return { error: 'key can not be an empty string' }
 
-        if (typeof data !== 'string') return { error: 'data only can be of type string' }
         if (typeof data === 'string' && data.length === 0) return { error: 'data lenght can not be zero' }
+        if (data === null) return { error: 'data cannot be null' }
+        if (typeof data === 'undefined') return { error: 'data cannot be undefined' }
+        if (typeof data === 'number' && isNaN(data)) return { error: 'data cannot be NaN' }
+        if (typeof data === 'bigint') return { error: 'data cannot be of type bigint' }
 
         const { data: stringifiedData } = this.stringify(data)
 
@@ -145,6 +150,10 @@ export class StorageModel {
 
             }
         });
+    }
+
+    static clear() {
+        localStorage.clear()
     }
 
 }

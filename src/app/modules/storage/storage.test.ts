@@ -3,7 +3,7 @@ import { StorageModel } from "./storage"
 
 // it looks like storage does not persist between tests.
 beforeEach(() => {
-    localStorage.clear()
+    StorageModel.clear()
 })
 
 describe("Storage", () => {
@@ -32,7 +32,6 @@ describe("Storage", () => {
         undefined,
         900719925124740999n,
         NaN,
-        true,
         , ''
     ]
 
@@ -45,7 +44,7 @@ describe("Storage", () => {
         expect(error).toBeTruthy()
     });
 
-    test('saving an item twice should return an error', () => {
+    test('saving an item with the same key twice should return an error', () => {
         const key = '123'
         const data = 'test data in string'
 
@@ -62,13 +61,44 @@ describe("Storage", () => {
         expect(itemDataFromLocalStorage).toEqual(expect.stringContaining(data))
     })
 
+    const items = [
+        { key: '1', data: 'string' },
+        { key: '2', data: 1 },
+        { key: '3', data: { key: 'an object as data' } },
+        { key: '4', data: ['an array as data'] },
+        { key: '5', data: true },
+    ]
 
-    test.todo("getItem Method")
-    //    getItem Method
-    //Retrieve items stored with string, object, and number data types to ensure they are returned in their original form.
-    //Test retrieving a non-existent key and confirm it returns an appropriate error.
-    //Check if malformed or corrupted data in localStorage (e.g., invalid JSON) is handled gracefully.
+    test.each(items)("getItem should return item in the same data type it was saved: typeof %p", item => {
+        const { error } = StorageModel.saveItem(
+            { key: item.key, data: item.data }
+        )
 
+        expect(error).toBeNull()
+
+        const { item: returnedItem } = StorageModel.getItem({ key: item.key })
+
+        // we validate the array type manually, since the the type of an array is 'object' and we cannot check it with expect().tobeTypeof('array')
+        if (typeof item.data === 'object' && Array.isArray(item.data)) {
+            const isReturnedItemAnArray = Array.isArray(returnedItem)
+            expect(isReturnedItemAnArray).toEqual(true)
+        }
+
+        expect(returnedItem).toBeTypeOf(typeof item.data)
+
+
+    })
+
+    test('getItem with an inexisting key returns an error', () => {
+        // the key isalways going to be unique, since on top of this file we are clearing the storage before each test!
+        const { error, item } = StorageModel.getItem({ key: '123' })
+
+        expect(error).toBeTruthy()
+        expect(error).toBeTypeOf('string')
+        expect(error).not.toHaveLength(0)
+
+        expect(item).toBeNull()
+    })
 
     test.todo("removeItem Method")
     //    removeItem Method
