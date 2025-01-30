@@ -1,4 +1,4 @@
-type TData = string | object | number | [unknown] | boolean
+export type TData = string | object | number | [unknown] | boolean
 type TItemChanges = Pick<StorageEvent, 'key' | 'oldValue' | 'newValue' | 'url'>
 
 export class StorageModel {

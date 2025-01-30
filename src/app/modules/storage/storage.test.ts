@@ -1,5 +1,5 @@
 import { expect, test, describe, expectTypeOf, beforeEach } from "vitest"
-import { StorageModel } from "./storage"
+import { StorageModel, type TData } from "./storage"
 
 // it looks like storage does not persist between tests.
 beforeEach(() => {
@@ -154,11 +154,47 @@ describe("Storage", () => {
         })
     })
 
-    test.todo("updateItem Method")
-    //    updateItem Method
-    //Update existing items with different data types and confirm the updated values.
-    //Try updating a non-existent item and confirm it returns an appropriate error.
+    describe("updateItem Method", () => {
+        describe('item is updated', () => {
+            const items: Array<{ key: string, data: TData }> = [
+                { key: '1', data: 'a string' },
+                { 'key': '2', data: { name: 'user name', age: '32' } },
+                { 'key': '3', data: ['an array', 'as data'] },
+                { 'key': '3', data: true },
+                { key: '4', data: 123 },
+            ]
 
+            for (let i = 0; i < items.length; i++) {
+                test('item should be updated from one data type to another', () => {
+
+                    const { data: firstData, key } = items[i === 0 ? 2 : i - 1]
+
+                    const { error } = StorageModel.saveItem({ key, data: firstData })
+                    expect(error).toBeNull()
+
+                    const newData = items[i].data
+                    const { error: errorUpdatingItem } = StorageModel.updateItem({ key, data: newData })
+                    expect(errorUpdatingItem).toBeNull()
+
+                    const { item, error: errorGettingItem } = StorageModel.getItem({ key })
+                    expect(item).toBeTruthy()
+                    expect(item).toBeTypeOf(typeof newData)
+                    expect(item).toEqual(newData)
+                    expect(item).not.toEqual(firstData)
+                    expect(errorGettingItem).toBeNull()
+                })
+
+            }
+        })
+
+        test('updating a non-existing item return an error', () => {
+            const { error } = StorageModel.updateItem({ key: 'unexisting_key', data: 'my new data' })
+
+            expect(error).toBeTruthy()
+            expect(error).toBeTypeOf('string')
+            expect(error).not.toHaveLength(0)
+        })
+    })
 
     test.todo("subscribeToItemChanges Method")
     //    subscribeToItemChanges Method
