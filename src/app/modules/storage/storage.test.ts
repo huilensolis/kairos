@@ -135,10 +135,24 @@ describe("Storage", () => {
         })
     })
 
-    test.todo("removeItem Method")
-    //    removeItem Method
-    //Remove an existing item and ensure it no longer exists in localStorage.
-    //Attempt to remove a non-existent item and confirm no error is thrown.
+    describe("removeItem Method", () => {
+        test('item is actually removed from storage', () => {
+
+            const key = 'myKey'
+            const data = 'this is a test item'
+
+            const { error: errorSavingItem } = StorageModel.saveItem({ key, data })
+            expect(errorSavingItem).toBeNull()
+
+            StorageModel.removeItem({ key })
+
+            const { error, item } = StorageModel.getItem({ key })
+            expect(error).toBeTruthy()
+            expect(error).toBeTypeOf('string')
+            expect(error).not.toHaveLength(0)
+            expect(item).toBeNull()
+        })
+    })
 
     test.todo("updateItem Method")
     //    updateItem Method
