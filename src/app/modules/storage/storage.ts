@@ -75,7 +75,7 @@ export class StorageModel {
 
     }
 
-    static getItem({ key }: { key: string }): { item: TData, error: null } | { item: null, error: string } {
+    static getItem<T>({ key }: { key: string }): { item: T, error: null } | { item: null, error: string } {
         const item = localStorage.getItem(key)
 
         if (item) {
@@ -83,17 +83,17 @@ export class StorageModel {
                 const parsedData: object = JSON.parse(item)
 
                 // return an object
-                return { item: parsedData, error: null }
+                return { item: parsedData as T, error: null }
             }
 
             if (this.isNumber(item)) {
                 const parsedData = Number(item)
 
-                return { item: parsedData, error: null }
+                return { item: parsedData as T, error: null }
             }
 
             // if item is a string, return it raw
-            return { item, error: null }
+            return { item: item as T, error: null }
         }
 
         return { item: null, error: 'item not found' }
