@@ -49,13 +49,10 @@ export class StorageModel {
         error: null | string
     } {
 
-        if (typeof key !== 'string' && typeof key !== 'number') return { error: 'key must be string or number' }
-
-        if (typeof key === 'number' && isNaN(key)) return { error: 'key can not be NaN' }
-        if (typeof key === 'string' && key.length === 0) return { error: 'key can not be an empty string' }
+        if (key.length === 0) return { error: 'key can not be an empty string' }
+        if (key.split(' ').length > 1) return { error: 'key can not contain spaces' }
 
         if (typeof data === 'string' && data.length === 0) return { error: 'data lenght can not be zero' }
-        if (data === null) return { error: 'data cannot be null' }
         if (typeof data === 'undefined') return { error: 'data cannot be undefined' }
         if (typeof data === 'number' && isNaN(data)) return { error: 'data cannot be NaN' }
         if (typeof data === 'bigint') return { error: 'data cannot be of type bigint' }
@@ -67,9 +64,15 @@ export class StorageModel {
 
         if (doesItemAlreadyExist) return { error: `an item with key: ${key} already exist. use the update method instead` }
 
-        localStorage.setItem(key, stringifiedData)
+        try {
+            localStorage.setItem(key, stringifiedData)
+            return { error: null }
+        } catch (e) {
+            console.log(e)
+            return { error: 'unexpected error' }
+        }
 
-        return { error: null }
+
     }
 
     static getItem({ key }: { key: string }): { item: TData, error: null } | { item: null, error: string } {

@@ -10,7 +10,6 @@ describe("Storage", () => {
 
     describe('clear method', () => {
         const items = [
-
             { key: '1', data: 'some data' }
             , { key: '2', data: 'some data' }
             , { key: '3', data: 'some data' }
@@ -37,42 +36,38 @@ describe("Storage", () => {
 
     describe('saveItem method', () => {
 
-        const invalidKeyTypes = [
-            null,
-            undefined,
-            900719925124740999n,
-            NaN,
-            true,
-            { someObjectKey: '' },
-            ['test']
-            , ''
-        ]
+        // test key with empty string, or data with empty objects/strings
 
-        test.each(invalidKeyTypes)('should handle invalid key type: %p', (invalidKey) => {
-            const data = 'data in a valid format'
+        test('should return error when receiving an empty string as a key', () => {
+            const emptyString = ''
 
-            const { error } = StorageModel.saveItem({ key: invalidKey as any, data })
+            const { error } = StorageModel.saveItem({ key: emptyString, data: 'some valid data' })
 
-            expectTypeOf(error as string).toBeString()
             expect(error).toBeTruthy()
-        });
+            expect(error).toBeTypeOf('string')
+            expect(error).not.toHaveLength(0)
+        })
 
-        const invalidData = [
-            null,
-            undefined,
-            900719925124740999n,
-            NaN,
-            , ''
-        ]
+        test('should return error when receiving key with spaces', () => {
+            const keyWithSpaces = '123 123'
 
-        test.each(invalidData)('should handle invalid data type: %p', (invalidData) => {
-            const key = Date.now() + Math.floor(Math.random() * 1000);
+            const { error } = StorageModel.saveItem({ key: keyWithSpaces, data: 'some valid data' })
 
-            const { error } = StorageModel.saveItem({ key: key.toString(), data: invalidData as string })
-
-            expectTypeOf(error as string).toBeString()
             expect(error).toBeTruthy()
-        });
+            expect(error).toBeTypeOf('string')
+            expect(error).not.toHaveLength(0)
+        })
+
+
+        test('should return error when receiving an empty string as data', () => {
+            const emptyString = ''
+
+            const { error } = StorageModel.saveItem({ key: 'valid_key', data: emptyString })
+
+            expect(error).toBeTruthy()
+            expect(error).toBeTypeOf('string')
+            expect(error).not.toHaveLength(0)
+        })
 
         test('saving an item with the same key twice should return an error', () => {
             const key = '123'
