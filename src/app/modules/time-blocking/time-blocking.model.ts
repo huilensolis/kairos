@@ -1,11 +1,10 @@
 import { randomUUID } from "crypto";
 
-type TColor = 'blue' | 'orange' | 'red' | 'green' | 'purple'
+type TColor = 'blue' | 'orange' | 'red' | 'green' | 'indigo'
 type TStatus = 'pause' | 'playing' | 'completed'
 
 export interface TTimeBlock {
     id: string;
-    index: number;
     title: string;
     color: TColor;
     status: TStatus
@@ -16,7 +15,6 @@ export interface TTimeBlock {
 
 interface TimeBlockInterface {
     id: string;
-    index: number;
     title: string;
     color: TColor;
     status: TStatus
@@ -30,7 +28,6 @@ interface TimeBlockInterface {
 
 export class TimeBlock implements TimeBlockInterface {
     public id: string;
-    public index: number;
     public title: string;
     public color: TColor;
     public status: TStatus
@@ -43,7 +40,7 @@ export class TimeBlock implements TimeBlockInterface {
     constructor({ timeBlock, onUpdate }:
         { timeBlock: TTimeBlock, onUpdate: (timeblock: TTimeBlock) => void }) {
 
-        const { id = randomUUID(), title, color = 'blue', status = 'pause', duration, elapsedTime = 0, createdAt = new Date(), index } = timeBlock
+        const { id = randomUUID(), title, color = 'blue', status = 'pause', duration, elapsedTime = 0, createdAt = new Date()} = timeBlock
 
         this.id = id
         this.title = title
@@ -52,7 +49,6 @@ export class TimeBlock implements TimeBlockInterface {
         this.duration = duration
         this.elapsedTime = elapsedTime
         this.createdAt = createdAt
-        this.index = index
 
         this.onUpdate = onUpdate
     }

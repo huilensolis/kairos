@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState } from "react";
-import { TimeBlock, type TTimeBlock } from "./time-blocking";
+import { useState } from "react";
+import { TimeBlock, type TTimeBlock } from "./time-blocking.model";
 import { StorageModel } from "../storage/storage";
 
 export function useTimeBlock({ id }: { id: TTimeBlock['id'] }) {
@@ -25,13 +25,13 @@ export function useTimeBlock({ id }: { id: TTimeBlock['id'] }) {
         return { timeblock }
     }
 
-    useEffect(() => {
-        const { timeblock } = getTimeBlock({ id })
+    //useEffect(() => {
+    //    const { timeblock } = getTimeBlock({ id })
+    //
+    //    setTimeBlock(timeblock)
+    //}, [])
 
-        setTimeBlock(timeblock)
-    }, [])
-
-    function updateTimeBlock({ ...updatedValues }: TTimeBlock) {
+    function updateTimeBlock({ ...updatedValues }: Partial<TTimeBlock>) {
         if (!timeBlock) return
 
         timeBlock.updateTimeBlock(updatedValues)

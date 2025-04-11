@@ -72,7 +72,6 @@ export class StorageModel {
             return { error: 'unexpected error' }
         }
 
-
     }
 
     static getItem<T>({ key }: { key: string }): { item: T, error: null } | { item: null, error: string } {
@@ -131,7 +130,16 @@ export class StorageModel {
                     url // the url of the tab that made the change
                 } = event
 
-                if (key === itemKey) callback({ oldValue, newValue, url })
+                // TODO: change this to use a re-usable function that detects the input type and outputs the input parsed
+                let parsedValues: { oldValue: any, newValue: any } = { oldValue, newValue }
+
+                if (oldValue && this.isJson(oldValue)) parsedValues.oldValue = JSON.parse(oldValue)
+                if (oldValue && this.isNumber(oldValue)) parsedValues.oldValue = Number(oldValue)
+
+                if (newValue && this.isJson(newValue)) parsedValues.newValue = JSON.parse(newValue)
+                if (newValue && this.isNumber(newValue)) parsedValues.newValue = Number(newValue)
+
+                if (key === itemKey) callback({ oldValue: parsedValues.oldValue, newValue: parsedValues.newValue, url })
 
             }
         });
@@ -149,7 +157,16 @@ export class StorageModel {
                     url // the url of the tab that made the change
                 } = event
 
-                callback({ key, oldValue, newValue, url })
+                // TODO: change this to use a re-usable function that detects the input type and outputs the input parsed
+                let parsedValues: { oldValue: any, newValue: any } = { oldValue, newValue }
+
+                if (oldValue && this.isJson(oldValue)) parsedValues.oldValue = JSON.parse(oldValue)
+                if (oldValue && this.isNumber(oldValue)) parsedValues.oldValue = Number(oldValue)
+
+                if (newValue && this.isJson(newValue)) parsedValues.newValue = JSON.parse(newValue)
+                if (newValue && this.isNumber(newValue)) parsedValues.newValue = Number(newValue)
+
+                callback({ key, oldValue: parsedValues.oldValue, newValue: parsedValues.newValue, url })
 
             }
         });

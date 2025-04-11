@@ -1,8 +1,8 @@
 'use client'
 
 
-import { useState } from "react";
-import { TimeBlock } from "./time-blocking";
+import { useEffect, useState } from "react";
+import { TimeBlock } from "./time-blocking.model";
 import { StorageModel } from "../storage/storage";
 type TTimeblockListItem = {
     id: TimeBlock['id']
@@ -12,13 +12,33 @@ const timeBlockListKey = 'timeblocklist'
 
 export function useTimeBlockList() {
     const [timeBlockList, setTimeBlockList] = useState<TTimeblockListItem[]>(() => {
-        //generateTimeBlocks()
-        const { timeBlockList } = getTimeBlockList()
+        const { timeBlockList } = getTimeBlockListFromStorage()
 
         return timeBlockList
     })
 
-    function getTimeBlockList(): { timeBlockList: TTimeblockListItem[] } {
+    useEffect(() => {
+        StorageModel.subscribeToItemChanges(timeBlockListKey, ({ oldValue, newValue, url }) => {
+            if (!newValue) {
+                setTimeBlockList([])
+                return
+            }
+
+            setTimeBlockList(newValue as unknown as TTimeblockListItem[])
+        })
+    }, [])
+
+    useEffect(() => {
+        const { error: doesTimeBlockListItemExistInStorage } = StorageModel.getItem({ key: timeBlockListKey })
+        if (doesTimeBlockListItemExistInStorage) {
+            StorageModel.saveItem({ key: timeBlockListKey, data: timeBlockList })
+            return
+        }
+
+        StorageModel.updateItem({ key: timeBlockListKey, data: timeBlockList })
+    }, [timeBlockList])
+
+    function getTimeBlockListFromStorage(): { timeBlockList: TTimeblockListItem[] } {
         const { item: timeBlockList, error } = StorageModel.getItem<TTimeblockListItem[]>({ key: timeBlockListKey })
 
         if (!timeBlockList || error) return { timeBlockList: [] }
@@ -26,27 +46,5 @@ export function useTimeBlockList() {
         return { timeBlockList }
     }
 
-    function generateTimeBlocks() {
-        const localTimeBlockList = [
-            new TimeBlock({
-                timeBlock: { id: crypto.randomUUID(), index: 1, status: 'pause', title: 'test', elapsedTime: 0, duration: 1100000, createdAt: new Date(), color: 'red' }, onUpdate: (timeblock) => {
-                    //
-                }
-            })
-        ]
-
-        localTimeBlockList.forEach((timeblock) => {
-            StorageModel.saveItem({ key: timeblock.id, data: timeblock })
-        })
-
-        const blocklist = localTimeBlockList.map((item) => {
-            return { id: item.id }
-        })
-
-        StorageModel.saveItem({
-            key: timeBlockListKey, data: blocklist
-        })
-    }
-
-    return { timeBlockList }
+    function pushListItem({ timeblock }: { timeblock: TTimeblockListItem }) { setTimeBlockList([...timeBlockList, timeblock]) } return { timeBlockList, pushListItem }
 }
