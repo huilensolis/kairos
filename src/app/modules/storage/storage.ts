@@ -140,7 +140,6 @@ export class StorageModel {
                 if (newValue && this.isNumber(newValue)) parsedValues.newValue = Number(newValue)
 
                 if (key === itemKey) callback({ oldValue: parsedValues.oldValue, newValue: parsedValues.newValue, url })
-
             }
         });
     }

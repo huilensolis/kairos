@@ -2,9 +2,14 @@
 
 import { useTimeBlockList } from "@/app/modules/time-blocking/time-blocklist.hook"
 import { Timeblock } from "./timeblock.component"
+import { useEffect } from "react"
 
 export function TimeBlockList() {
     const { timeBlockList } = useTimeBlockList()
+
+    useEffect(() => {
+        console.log('state changed')
+    }, [timeBlockList])
 
     return (
         <ul className='w-full flex flex-col-reverse gap-2 p-2'>

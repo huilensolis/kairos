@@ -25,7 +25,7 @@ export function NewTimeBlock() {
 
         StorageModel.saveItem({ key: timeblock.id, data: timeblock })
 
-        pushListItem({ timeblock })
+        pushListItem({ timeblock: { id: timeblock.id } })
     }
 
     return <button onClick={onNewTimeBlock}>new test timeblock</button>
