@@ -16,12 +16,17 @@ const TIME_BLOCK_LIST_CHANGE_EVENT_NAME = 'timeblocklist-change'
 
 export function useTimeBlockList() {
     const isInitializedRef = useRef(false);
+    const [ isStateSyncWithStorage, setIsStateSyncWithStorage] = useState(false) 
 
-    const [timeBlockList, setTimeBlockList] = useState<TTimeblockListItem[]>(() => {
+    const [timeBlockList, setTimeBlockList] = useState<TTimeblockListItem[]>([])
+
+    useEffect(() => {
         const { timeBlockList } = getTimeBlockListFromStorage()
 
-        return timeBlockList
-    })
+        setTimeBlockList(timeBlockList)
+
+        setIsStateSyncWithStorage(true)
+    }, [])
 
     function ensureTimeBlockListExistsInStorage() {
         // ensure timeblocklist exists in storage
@@ -45,7 +50,7 @@ export function useTimeBlockList() {
 
 
             setTimeBlockList((prev) => {
-                if(prev.length !== updatedTimeBlockList.length){
+                if (prev.length !== updatedTimeBlockList.length) {
                     return [...updatedTimeBlockList]
                 }
 
@@ -58,7 +63,7 @@ export function useTimeBlockList() {
 
         // sync through multiple tabs
         // listen to another tab changes in storage
-        StorageModel.subscribeToItemChanges(TIME_BLOCK_LIST_KEY, ({ newValue}) => {
+        StorageModel.subscribeToItemChanges(TIME_BLOCK_LIST_KEY, ({ newValue }) => {
             if (!newValue) {
                 setTimeBlockList([])
                 return
@@ -80,6 +85,9 @@ export function useTimeBlockList() {
 
 
     useEffect(() => {
+        if(!isStateSyncWithStorage) return
+        console.log('running')
+
         const { timeBlockList: timeBlockListFromStorage } = getTimeBlockListFromStorage()
 
         if (timeBlockListFromStorage.length !== timeBlockList.length) {
