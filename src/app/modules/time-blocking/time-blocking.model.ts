@@ -22,7 +22,7 @@ interface TimeBlockInterface {
     elapsedTime: number
     createdAt: Date;
 
-    onUpdate: (timeblock: TTimeBlock) => void
+    onUpdate: (timeblock: TimeBlock) => void
 }
 
 
@@ -35,12 +35,12 @@ export class TimeBlock implements TimeBlockInterface {
     public elapsedTime: number
     public createdAt: Date;
 
-    onUpdate: (timeblock: TTimeBlock) => void;
+    onUpdate: (timeblock: TimeBlock) => void;
 
     constructor({ timeBlock, onUpdate }:
-        { timeBlock: TTimeBlock, onUpdate: (timeblock: TTimeBlock) => void }) {
+        { timeBlock: TTimeBlock, onUpdate: (timeblock: TimeBlock) => void }) {
 
-        const { id = randomUUID(), title, color = 'blue', status = 'pause', duration, elapsedTime = 0, createdAt = new Date()} = timeBlock
+        const { id = randomUUID(), title, color = 'blue', status = 'pause', duration, elapsedTime = 0, createdAt = new Date() } = timeBlock
 
         this.id = id
         this.title = title
@@ -57,14 +57,29 @@ export class TimeBlock implements TimeBlockInterface {
         //
     }
 
-    updateTimeBlock({ ...newData }: Partial<Omit<TTimeBlock, 'id'>>) {
+    clone(): TimeBlock {
+        return new TimeBlock({
+            timeBlock: {
+                id: this.id,
+                title: this.title,
+                color: this.color,
+                status: this.status,
+                duration: this.duration,
+                elapsedTime: this.elapsedTime,
+                createdAt: this.createdAt,
+            },
+            onUpdate: this.onUpdate,
+        });
+    }
+
+
+    update({ ...newData }: Partial<Omit<TTimeBlock, 'id'>>) {
         for (const key of Object.keys(newData) as Array<keyof typeof newData>) {
             if (key in this) {
                 (this as any)[key] = newData[key]!
             }
         }
 
-
-        this.onUpdate(this)
+        this.onUpdate(this.clone())
     }
 }
