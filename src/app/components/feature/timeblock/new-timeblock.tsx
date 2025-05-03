@@ -16,7 +16,7 @@ export function NewTimeBlock() {
                     id: crypto.randomUUID(),
                     color: 'indigo',
                     createdAt: new Date(),
-                    duration: 400000,
+                    duration: 347,
                     title: 'test time block'
                 },
                 onUpdate: () => { }

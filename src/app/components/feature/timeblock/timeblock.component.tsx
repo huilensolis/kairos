@@ -25,7 +25,8 @@ export function Timeblock({ id }: { id: TimeBlock['id'] }) {
         <article className={`${color === 'blue' ? 'bg-ext_blue' : color === 'orange' ? 'bg-ext_orange' : color === 'red' ? 'bg-ext_red' : color === 'green' ? 'bg-ext_green' : color === 'indigo' ? 'bg-ext_indigo' : 'bg-gray-500'} w-full rounded-sm p-2`}>
             <h1>{timeBlock.title}</h1>
             <p>duration: {timeBlock.duration}</p>
-            <p>progress: {timeBlock.elapsedTime}</p>
+            <p>elapsedTime: <FormatedTime time={timeBlock.elapsedTime} /> </p>
+            <p>progress: {(timeBlock.elapsedTime / timeBlock.duration) * 100}%</p>
             {(timeBlock.status === 'pause' || timeBlock.status === 'playing') && (
                 <button onClick={() => {
                     updateTimeBlock({ status: timeBlock.status === 'playing' ? 'pause' : 'playing' })
@@ -33,4 +34,10 @@ export function Timeblock({ id }: { id: TimeBlock['id'] }) {
             )}
         </article>
     )
+}
+
+function FormatedTime({ time }: { time: number }) {
+    if (time < 60) return <>{time}s</>
+    if (time > 60 && time < (60 * 60)) return <>{time / 60}m</>
+    if (time > 60 * 60) return <>{time / 60}h</>
 }
