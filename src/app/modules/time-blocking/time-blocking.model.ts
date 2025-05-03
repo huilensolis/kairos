@@ -76,7 +76,7 @@ export class TimeBlock implements TimeBlockInterface {
     update({ ...newData }: Partial<Omit<TTimeBlock, 'id'>>) {
         for (const key of Object.keys(newData) as Array<keyof typeof newData>) {
             if (key in this) {
-                (this as any)[key] = newData[key]!
+                (this as any)[key] = newData[key]! // eslint-disable-line @typescript-eslint/no-explicit-any
             }
         }
 

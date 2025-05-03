@@ -5,7 +5,7 @@ import { TimeBlock } from "@/app/modules/time-blocking/time-blocking.model"
 import { useTimeBlockList } from "@/app/modules/time-blocking/time-blocklist.hook"
 
 export function NewTimeBlock() {
-    const { timeBlockList, pushListItem } = useTimeBlockList()
+    const { pushListItem } = useTimeBlockList()
 
     function onNewTimeBlock() {
         const timeblock = new TimeBlock(

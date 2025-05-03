@@ -5,9 +5,9 @@ import { useTimeBlock } from "@/app/modules/time-blocking/time-blocking.hook";
 export function Timeblock({ id }: { id: TimeBlock['id'] }) {
     const { timeBlock, updateTimeBlock } = useTimeBlock({ id })
 
-    if (!timeBlock) return <article><h1> not found</h1></article>
 
     useEffect(() => {
+        if(!timeBlock) return
         if (timeBlock.status === 'playing') {
             const timeInterval = setInterval(() => {
                 updateTimeBlock({ elapsedTime: timeBlock.elapsedTime + 1 })
@@ -17,7 +17,9 @@ export function Timeblock({ id }: { id: TimeBlock['id'] }) {
                 clearInterval(timeInterval)
             }
         }
-    }, [timeBlock.status])
+    }, [timeBlock?.status])
+
+    if (!timeBlock) return <article><h1> not found</h1></article>
 
     const { color } = timeBlock
 

@@ -58,7 +58,7 @@ export function useTimeBlockList() {
 
         // sync through multiple tabs
         // listen to another tab changes in storage
-        StorageModel.subscribeToItemChanges(TIME_BLOCK_LIST_KEY, ({ oldValue, newValue, url }) => {
+        StorageModel.subscribeToItemChanges(TIME_BLOCK_LIST_KEY, ({ newValue}) => {
             if (!newValue) {
                 setTimeBlockList([])
                 return

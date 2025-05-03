@@ -39,7 +39,7 @@ export class StorageModel {
     private static isJson(str: string) {
         try {
             JSON.parse(str);
-        } catch (e) {
+        } catch {
             return false;
         }
         return true;
@@ -131,7 +131,7 @@ export class StorageModel {
                 } = event
 
                 // TODO: change this to use a re-usable function that detects the input type and outputs the input parsed
-                let parsedValues: { oldValue: any, newValue: any } = { oldValue, newValue }
+                let parsedValues: { oldValue: any, newValue: any } = { oldValue, newValue } // eslint-disable-line prefer-const, @typescript-eslint/no-explicit-any
 
                 if (oldValue && this.isJson(oldValue)) parsedValues.oldValue = JSON.parse(oldValue)
                 if (oldValue && this.isNumber(oldValue)) parsedValues.oldValue = Number(oldValue)
@@ -157,7 +157,7 @@ export class StorageModel {
                 } = event
 
                 // TODO: change this to use a re-usable function that detects the input type and outputs the input parsed
-                let parsedValues: { oldValue: any, newValue: any } = { oldValue, newValue }
+                let parsedValues: { oldValue: any, newValue: any } = { oldValue, newValue } // eslint-disable-line prefer-const, @typescript-eslint/no-explicit-any
 
                 if (oldValue && this.isJson(oldValue)) parsedValues.oldValue = JSON.parse(oldValue)
                 if (oldValue && this.isNumber(oldValue)) parsedValues.oldValue = Number(oldValue)
